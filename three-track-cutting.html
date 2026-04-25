@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three Track Cutting</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Rajdhani:wght@400;500;600&display=swap');
+  :root { --gold: #c9a84c; --gold-light: #e8c96a; --dark: #0f0f0f; --dark2: #1a1a1a; --dark3: #252525; --border: #333; --text: #e0e0e0; --muted: #888; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; min-height: 100vh; padding: 16px; }
+  .shop { text-align: center; background: var(--dark2); border: 1px solid var(--gold); border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; }
+  .shop h2 { font-family: 'Teko', sans-serif; color: var(--gold); font-size: 1.5rem; letter-spacing: 2px; }
+  .shop p { color: var(--muted); font-size: 0.9rem; margin-top: 3px; }
+  .header { text-align: center; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 2px solid var(--gold); }
+  .header h1 { font-family: 'Teko', sans-serif; font-size: 2rem; color: var(--gold); letter-spacing: 3px; }
+  .header p { color: var(--muted); font-size: 0.82rem; margin-top: 3px; }
+  .card { background: var(--dark2); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 14px; }
+  .card h2 { font-family: 'Teko', sans-serif; color: var(--gold); font-size: 1.3rem; letter-spacing: 2px; margin-bottom: 14px; }
+  .row { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .grp { flex: 1; min-width: 120px; }
+  .grp3 { flex: 1; min-width: 80px; }
+  label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+  input[type=number] { width: 100%; background: var(--dark3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; color: var(--text); font-size: 1rem; font-family: 'Rajdhani', sans-serif; outline: none; }
+  input[type=number]:focus { border-color: var(--gold); }
+  .btn { width: 100%; background: var(--gold); color: var(--dark); border: none; padding: 13px; border-radius: 8px; font-family: 'Teko', sans-serif; font-size: 1.3rem; letter-spacing: 3px; cursor: pointer; margin-top: 4px; }
+  .btn:active { opacity: 0.85; }
+  .result { display: none; }
+  .bdown { background: var(--dark3); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+  .bdown h4 { font-family: 'Teko', sans-serif; color: var(--gold-light); font-size: 1rem; letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .brow { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+  .brow:last-child { border: none; }
+  .bn { color: var(--muted); }
+  .bv { color: var(--gold-light); font-weight: 600; font-size: 0.95rem; }
+  .bvw { color: #7dff7d; font-weight: 600; font-size: 0.95rem; }
+  .glass-box { background: #0f1f2f; border: 1px solid #4a8ab5; border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+  .glass-box h4 { font-family: 'Teko', sans-serif; color: #7db8ff; font-size: 1rem; letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid #2a4a6a; padding-bottom: 6px; }
+  .grow { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #1a3a5a; font-size: 0.88rem; }
+  .grow:last-child { border: none; }
+  .gv { color: #7db8ff; font-weight: 600; font-size: 0.95rem; }
+  .shop-footer { text-align: center; background: var(--dark2); border: 1px solid var(--gold); border-radius: 10px; padding: 12px 16px; margin-top: 14px; }
+  .shop-footer h3 { font-family: 'Teko', sans-serif; color: var(--gold); font-size: 1.3rem; letter-spacing: 2px; }
+  .shop-footer p { color: var(--muted); font-size: 0.9rem; margin-top: 3px; }
+  .info-box { background: #1a1a0a; border: 1px solid #555; border-radius: 8px; padding: 12px; margin-bottom: 14px; font-size: 0.82rem; line-height: 1.8; color: var(--muted); }
+  .info-box b { color: var(--gold-light); }
+  .sot-helper { background: var(--dark3); border-radius: 6px; padding: 8px 12px; margin-top: 6px; font-size: 0.8rem; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="shop">
+  <h2>🏪 ADEEL WELDING & ALUMINIUM HOUSE</h2>
+  <p>📞 0321-7378024</p>
+</div>
+
+<div class="header">
+  <h1>✂️ THREE TRACK CUTTING</h1>
+  <p>Glass Door Cutting Calculator</p>
+</div>
+
+<div class="info-box">
+  <b>Formula (Saved):</b><br>
+  • M23/M28: Height - 1" 6sot | 4 pcs<br>
+  • M24: (Width - 6") ÷ 2 | 4 pcs<br>
+  • D29: 2 pcs = M23/M28 size | 2 pcs = M24 + 2"<br>
+  • Glass H: M23/M28 - 4" 1sot | Glass W: M24 + 4sot
+</div>
+
+<div class="card">
+  <h2>📏 FRAME SIZE DAALEN</h2>
+  <div class="row">
+    <div class="grp">
+      <label>Width — Inches</label>
+      <input type="number" id="wIn" placeholder="48" min="1">
+    </div>
+    <div class="grp">
+      <label>Width — Sot (0-7)</label>
+      <input type="number" id="wSot" placeholder="0" min="0" max="7" value="0">
+    </div>
+  </div>
+  <div class="row">
+    <div class="grp">
+      <label>Height — Inches</label>
+      <input type="number" id="hIn" placeholder="40" min="1">
+    </div>
+    <div class="grp">
+      <label>Height — Sot (0-7)</label>
+      <input type="number" id="hSot" placeholder="0" min="0" max="7" value="0">
+    </div>
+  </div>
+  <div class="sot-helper">💡 1 inch = 8 sot | Example: 40 inch 3 sot = 40.375"</div>
+  <button class="btn" onclick="calc()">CALCULATE KAREIN ▶</button>
+</div>
+
+<div class="result" id="res">
+
+  <div class="bdown">
+    <h4>🔩 M23 / M28 — HEIGHT PIECES (4 pcs)</h4>
+    <div class="brow"><span class="bn">Formula: Height - 1" 6sot</span><span class="bv" id="m23size">—</span></div>
+    <div class="brow"><span class="bn">Pieces</span><span class="bv">2 pcs M23 + 2 pcs M28</span></div>
+  </div>
+
+  <div class="bdown">
+    <h4>🔩 M24 — WIDTH PIECES (4 pcs)</h4>
+    <div class="brow"><span class="bn">Formula: (Width - 6") ÷ 2</span><span class="bvw" id="m24size">—</span></div>
+    <div class="brow"><span class="bn">Pieces</span><span class="bv">4 pcs M24</span></div>
+  </div>
+
+  <div class="bdown">
+    <h4>🔩 D29 — PIECES (4 pcs)</h4>
+    <div class="brow"><span class="bn">2 pcs — Same as M23/M28 size</span><span class="bv" id="d29h">—</span></div>
+    <div class="brow"><span class="bn">2 pcs — M24 size + 2"</span><span class="bvw" id="d29w">—</span></div>
+  </div>
+
+  <div class="glass-box">
+    <h4>🪟 GLASS SIZE</h4>
+    <div class="grow"><span class="bn">Glass Height (M23/M28 - 4" 1sot)</span><span class="gv" id="glassH">—</span></div>
+    <div class="grow"><span class="bn">Glass Width (M24 + 4sot / ½")</span><span class="gv" id="glassW">—</span></div>
+  </div>
+
+  <div class="shop-footer">
+    <h3>🏪 ADEEL WELDING & ALUMINIUM HOUSE</h3>
+    <p>📞 0321-7378024</p>
+  </div>
+</div>
+
+<script>
+function toDecimal(inch, sot) {
+  return parseFloat(inch || 0) + (parseFloat(sot || 0) / 8);
+}
+
+function toDisplay(decimal) {
+  var inches = Math.floor(decimal);
+  var sotVal = Math.round((decimal - inches) * 8);
+  if (sotVal === 8) { inches += 1; sotVal = 0; }
+  if (sotVal === 0) return inches + '"';
+  return inches + '" ' + sotVal + ' sot';
+}
+
+function calc() {
+  var wIn  = parseFloat(document.getElementById('wIn').value)  || 0;
+  var wSot = parseFloat(document.getElementById('wSot').value) || 0;
+  var hIn  = parseFloat(document.getElementById('hIn').value)  || 0;
+  var hSot = parseFloat(document.getElementById('hSot').value) || 0;
+
+  if (!wIn || !hIn) { alert('Width aur Height daalen!'); return; }
+
+  var W = toDecimal(wIn, wSot);
+  var H = toDecimal(hIn, hSot);
+
+  // M23/M28 size = Height - 1" 6sot (1.75")
+  var m23 = H - 1.75;
+
+  // M24 size = (Width - 6") / 2
+  var m24 = (W - 6) / 2;
+
+  // D29 sizes
+  var d29h = m23;         // same as M23/M28
+  var d29w = m24 + 2;     // M24 + 2"
+
+  // Glass sizes
+  var glassH = m23 - 4.125;   // M23 - 4" 1sot
+  var glassW = m24 + 0.5;     // M24 + 4sot (0.5")
+
+  document.getElementById('m23size').textContent = toDisplay(m23);
+  document.getElementById('m24size').textContent = toDisplay(m24);
+  document.getElementById('d29h').textContent    = toDisplay(d29h);
+  document.getElementById('d29w').textContent    = toDisplay(d29w);
+  document.getElementById('glassH').textContent  = toDisplay(glassH);
+  document.getElementById('glassW').textContent  = toDisplay(glassW);
+
+  document.getElementById('res').style.display = 'block';
+  document.getElementById('res').scrollIntoView({ behavior: 'smooth' });
+}
+
+document.addEventListener('keypress', function(e) { if (e.key === 'Enter') calc(); });
+</script>
+</body>
+</html>
