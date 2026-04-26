@@ -14,7 +14,9 @@
   .shop p { color: var(--muted); font-size: 0.9rem; margin-top: 3px; }
   .header { text-align: center; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 2px solid var(--gold); }
   .header h1 { font-family: 'Teko', sans-serif; font-size: 2rem; color: var(--gold); letter-spacing: 3px; }
-  .header p { color: var(--muted); font-size: 0.82rem; margin-top: 3px; }
+  .type-btns { display: flex; gap: 10px; margin-bottom: 14px; }
+  .type-btn { flex: 1; padding: 12px; border-radius: 8px; border: 2px solid var(--border); background: var(--dark2); color: var(--muted); font-family: 'Teko', sans-serif; font-size: 1.1rem; letter-spacing: 2px; cursor: pointer; }
+  .type-btn.active { border-color: var(--gold); color: var(--gold); background: #1e1a0f; }
   .window-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; position: relative; }
   .window-card h3 { font-family: 'Teko', sans-serif; color: var(--gold); font-size: 1.2rem; letter-spacing: 2px; margin-bottom: 12px; }
   .row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
@@ -41,6 +43,7 @@
   .shop-footer h3 { font-family: 'Teko', sans-serif; color: var(--gold); font-size: 1.3rem; letter-spacing: 2px; }
   .shop-footer p { color: var(--muted); font-size: 0.9rem; margin-top: 3px; }
   .reset-btn { width: 100%; background: #2a2a2a; color: var(--muted); border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-family: 'Teko', sans-serif; font-size: 1.1rem; letter-spacing: 2px; cursor: pointer; margin-top: 10px; }
+  .type-badge { display: inline-block; background: var(--dark3); border: 1px solid var(--gold); color: var(--gold); border-radius: 4px; padding: 2px 8px; font-size: 0.75rem; margin-left: 8px; }
 </style>
 </head>
 <body>
@@ -52,12 +55,14 @@
 
 <div class="header">
   <h1>🪟 CUSTOMER CALCULATOR</h1>
-  <p>Three Track Window — Customer Quote</p>
 </div>
 
-<div id="windows-container">
-  <!-- Windows added here -->
+<div class="type-btns">
+  <button class="type-btn active" id="btn-three" onclick="setType('three')">🪟 THREE TRACK</button>
+  <button class="type-btn" id="btn-double" onclick="setType('double')">🪟 DOUBLE TRACK</button>
 </div>
+
+<div id="windows-container"></div>
 
 <button class="add-btn" onclick="addWindow()">+ WINDOW ADD KAREIN</button>
 <button class="calc-btn" onclick="calculate()">CALCULATE KAREIN ▶</button>
@@ -81,28 +86,41 @@ var DISC = 0.32;
 var GLASS_RATE = 390;
 var ACC = 1800;
 
-// Section rates
-var rDC26F = 880, rDC30F = 754, rM23 = 354, rM28 = 431, rM24 = 420, rD29 = 274;
+// Three Track rates
+var T_rDC26F = 880, T_rDC30F = 754, T_rM23 = 354, T_rM28 = 431, T_rM24 = 420, T_rD29 = 274;
+
+// Double Track rates
+var D_rM26F = 680, D_rM30F = 612, D_rM23 = 354, D_rM28 = 431, D_rM24 = 420;
 
 var winCount = 0;
+var currentType = 'three';
+
+function setType(type) {
+  currentType = type;
+  document.getElementById('btn-three').className = 'type-btn' + (type === 'three' ? ' active' : '');
+  document.getElementById('btn-double').className = 'type-btn' + (type === 'double' ? ' active' : '');
+  // Reset windows when type changes
+  document.getElementById('windows-container').innerHTML = '';
+  document.getElementById('result').style.display = 'none';
+  winCount = 0;
+  addWindow();
+}
 
 function addWindow() {
   winCount++;
   var div = document.createElement('div');
   div.className = 'window-card';
   div.id = 'win-' + winCount;
-  div.innerHTML = `
-    <h3>🪟 WINDOW ${winCount}</h3>
-    <button class="del-btn" onclick="delWindow(${winCount})">✕ DELETE</button>
-    <div class="row">
-      <div class="grp"><label>Width (inches)</label><input type="number" id="w${winCount}" placeholder="48" min="1"></div>
-      <div class="grp"><label>Height (inches)</label><input type="number" id="h${winCount}" placeholder="48" min="1"></div>
-    </div>
-    <div class="row">
-      <div class="grp"><label>Quantity</label><input type="number" id="q${winCount}" placeholder="1" min="1" value="1"></div>
-      <div class="grp"><label>👷 Labour (per sqft)</label><input type="number" id="l${winCount}" placeholder="0" min="0" value="0"></div>
-    </div>
-  `;
+  div.innerHTML = '<h3>🪟 WINDOW ' + winCount + '</h3>' +
+    '<button class="del-btn" onclick="delWindow(' + winCount + ')">✕ DELETE</button>' +
+    '<div class="row">' +
+    '<div class="grp"><label>Width (inches)</label><input type="number" id="w' + winCount + '" placeholder="48" min="1"></div>' +
+    '<div class="grp"><label>Height (inches)</label><input type="number" id="h' + winCount + '" placeholder="48" min="1"></div>' +
+    '</div>' +
+    '<div class="row">' +
+    '<div class="grp"><label>Quantity</label><input type="number" id="q' + winCount + '" placeholder="1" min="1" value="1"></div>' +
+    '<div class="grp"><label>Labour (per sqft)</label><input type="number" id="l' + winCount + '" placeholder="0" min="0" value="0"></div>' +
+    '</div>';
   document.getElementById('windows-container').appendChild(div);
 }
 
@@ -111,42 +129,37 @@ function delWindow(n) {
   if (el) el.remove();
 }
 
-function calcWindow(w, h, qty, labourRate) {
-  // Sections
-  var tDC26F = (w + 6) * qty / 12 * rDC26F;
-  var tDC30F = ((w + 6) + (h + 6) + (h + 6)) * qty / 12 * rDC30F;
-  var tM23   = (h * 2) * qty / 12 * rM23;
-  var tM28   = (h * 2) * qty / 12 * rM28;
-  var tM24   = (w * 2) * qty / 12 * rM24;
-  var tD29   = ((h * 2) + w) * qty / 12 * rD29;
-
+function calcThreeTrack(w, h, qty, labourRate) {
+  var tDC26F = (w + 6) * qty / 12 * T_rDC26F;
+  var tDC30F = ((w + 6) + (h + 6) + (h + 6)) * qty / 12 * T_rDC30F;
+  var tM23   = (h * 2) * qty / 12 * T_rM23;
+  var tM28   = (h * 2) * qty / 12 * T_rM28;
+  var tM24   = (w * 2) * qty / 12 * T_rM24;
+  var tD29   = ((h * 2) + w) * qty / 12 * T_rD29;
   var gross = tDC26F + tDC30F + tM23 + tM28 + tM24 + tD29;
-  var discAmt = gross * DISC;
-  var netSections = gross - discAmt;
-
-  // Glass (W-5 x H-5)
+  var netSections = gross - (gross * DISC);
   var glassSqft = ((w - 5) / 12) * ((h - 5) / 12) * qty;
   var glassAmt = glassSqft * GLASS_RATE;
-
-  // Accessories
   var accAmt = ACC * qty;
-
-  // Labour (W+3 x H+3 sqft)
   var sqft = ((w + 3) / 12) * ((h + 3) / 12) * qty;
   var labourAmt = sqft * labourRate;
+  return { netSections: netSections, glassAmt: glassAmt, accAmt: accAmt, labourAmt: labourAmt, total: netSections + glassAmt + accAmt + labourAmt, sqft: sqft };
+}
 
-  var total = netSections + glassAmt + accAmt + labourAmt;
-
-  return {
-    gross: gross,
-    discAmt: discAmt,
-    netSections: netSections,
-    glassAmt: glassAmt,
-    accAmt: accAmt,
-    labourAmt: labourAmt,
-    total: total,
-    sqft: sqft
-  };
+function calcDoubleTrack(w, h, qty, labourRate) {
+  var tM26F = (w + 6) * qty / 12 * D_rM26F;
+  var tM30F = ((w + 6) + (h + 6) + (h + 6)) * qty / 12 * D_rM30F;
+  var tM23  = (h * 2) * qty / 12 * D_rM23;
+  var tM28  = (h * 2) * qty / 12 * D_rM28;
+  var tM24  = (w * 2) * qty / 12 * D_rM24;
+  var gross = tM26F + tM30F + tM23 + tM28 + tM24;
+  var netSections = gross - (gross * DISC);
+  var glassSqft = ((w - 5) / 12) * ((h - 5) / 12) * qty;
+  var glassAmt = glassSqft * GLASS_RATE;
+  var accAmt = ACC * qty;
+  var sqft = ((w + 3) / 12) * ((h + 3) / 12) * qty;
+  var labourAmt = sqft * labourRate;
+  return { netSections: netSections, glassAmt: glassAmt, accAmt: accAmt, labourAmt: labourAmt, total: netSections + glassAmt + accAmt + labourAmt, sqft: sqft };
 }
 
 function calculate() {
@@ -156,6 +169,7 @@ function calculate() {
   var resultsHTML = '';
   var grandTotal = 0;
   var winNum = 0;
+  var typeName = currentType === 'three' ? 'Three Track' : 'Double Track';
 
   cards.forEach(function(card) {
     var id = card.id.replace('win-', '');
@@ -163,23 +177,19 @@ function calculate() {
     var h = parseFloat(document.getElementById('h' + id).value) || 0;
     var qty = parseInt(document.getElementById('q' + id).value) || 1;
     var labour = parseFloat(document.getElementById('l' + id).value) || 0;
-
     if (!w || !h) return;
-
     winNum++;
-    var r = calcWindow(w, h, qty, labour);
+    var r = currentType === 'three' ? calcThreeTrack(w, h, qty, labour) : calcDoubleTrack(w, h, qty, labour);
     grandTotal += r.total;
-
-    resultsHTML += `
-      <div class="win-result">
-        <h4>🪟 WINDOW ${winNum} — ${w}" × ${h}" (×${qty})</h4>
-        <div class="brow"><span class="bn">Sections (after 32% disc)</span><span class="bv">Rs. ${Math.round(r.netSections)}</span></div>
-        <div class="brow"><span class="bn">Glass (${Math.round(r.sqft * 100) / 100} sqft)</span><span class="bv">Rs. ${Math.round(r.glassAmt)}</span></div>
-        <div class="brow"><span class="bn">Accessories</span><span class="bv">Rs. ${Math.round(r.accAmt)}</span></div>
-        <div class="brow"><span class="bn">Labour</span><span class="bv">Rs. ${Math.round(r.labourAmt)}</span></div>
-        <div class="brow"><span class="bn" style="color:var(--gold)">Window Total</span><span class="bvg">Rs. ${Math.round(r.total)}</span></div>
-      </div>
-    `;
+    resultsHTML +=
+      '<div class="win-result">' +
+      '<h4>🪟 WINDOW ' + winNum + ' — ' + w + '" × ' + h + '" (×' + qty + ') <span class="type-badge">' + typeName + '</span></h4>' +
+      '<div class="brow"><span class="bn">Sections (after 32% disc)</span><span class="bv">Rs. ' + Math.round(r.netSections) + '</span></div>' +
+      '<div class="brow"><span class="bn">Glass (' + (Math.round(r.sqft * 100) / 100) + ' sqft)</span><span class="bv">Rs. ' + Math.round(r.glassAmt) + '</span></div>' +
+      '<div class="brow"><span class="bn">Accessories</span><span class="bv">Rs. ' + Math.round(r.accAmt) + '</span></div>' +
+      '<div class="brow"><span class="bn">Labour</span><span class="bv">Rs. ' + Math.round(r.labourAmt) + '</span></div>' +
+      '<div class="brow"><span class="bn" style="color:var(--gold)">Window Total</span><span class="bvg">Rs. ' + Math.round(r.total) + '</span></div>' +
+      '</div>';
   });
 
   document.getElementById('results-container').innerHTML = resultsHTML;
@@ -193,9 +203,9 @@ function resetAll() {
   document.getElementById('results-container').innerHTML = '';
   document.getElementById('result').style.display = 'none';
   winCount = 0;
+  addWindow();
 }
 
-// Add first window automatically
 addWindow();
 </script>
 </body>
