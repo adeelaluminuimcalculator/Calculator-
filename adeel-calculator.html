@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adeel Calculator</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f0f0f;color:#e0e0e0;font-family:sans-serif;padding:12px;min-height:100vh}
+.shop{text-align:center;background:#1a1a1a;border:1px solid #c9a84c;border-radius:10px;padding:12px;margin-bottom:12px}
+.shop h2{color:#c9a84c;font-size:1.2rem}
+.shop p{color:#888;font-size:0.85rem;margin-top:3px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.tab{padding:11px 6px;border-radius:8px;border:2px solid #333;background:#1a1a1a;color:#888;font-size:0.95rem;cursor:pointer;text-align:center;font-weight:bold}
+.tab.on{border-color:#c9a84c;color:#c9a84c;background:#1e1a0f}
+.pg{display:none}
+.pg.on{display:block}
+.card{background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:14px;margin-bottom:10px}
+.card h3{color:#c9a84c;font-size:1rem;font-weight:bold;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
+.fbox{background:#1a1a1a;border:1px solid #c9a84c;border-radius:10px;padding:11px;margin-bottom:10px;font-size:0.82rem;line-height:1.9}
+.fbox h3{color:#c9a84c;font-size:0.9rem;margin-bottom:5px}
+.tag{background:#252525;border:1px solid #333;padding:1px 6px;border-radius:4px;font-size:0.75rem;color:#e8c96a;margin-left:3px}
+.row{display:flex;gap:10px;margin-bottom:10px}
+.grp{flex:1}
+label{display:block;font-size:0.72rem;color:#888;margin-bottom:4px;text-transform:uppercase}
+input{width:100%;background:#252525;border:1px solid #333;border-radius:6px;padding:9px 10px;color:#e0e0e0;font-size:1rem;outline:none;-webkit-appearance:none}
+input:focus{border-color:#c9a84c}
+.btn{width:100%;background:#c9a84c;color:#0f0f0f;border:none;padding:13px;border-radius:8px;font-size:1.1rem;font-weight:bold;cursor:pointer;margin-top:6px;letter-spacing:1px}
+.res{display:none;margin-top:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.rc{background:#252525;border:1px solid #333;border-radius:8px;padding:10px;text-align:center}
+.rc.hl{border-color:#c9a84c;background:#1e1a0f}
+.rl{font-size:0.7rem;color:#888;text-transform:uppercase;margin-bottom:3px}
+.rv{font-size:1.3rem;color:#e0e0e0;font-weight:bold}
+.rc.hl .rv{color:#c9a84c}
+.bd{background:#252525;border-radius:8px;padding:10px;margin-bottom:8px}
+.bd h4{color:#e8c96a;font-size:0.85rem;font-weight:bold;margin-bottom:7px;text-transform:uppercase;letter-spacing:1px}
+.br{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #333;font-size:0.82rem}
+.br:last-child{border:none}
+.bn{color:#888}
+.bv{color:#e0e0e0;font-weight:bold}
+.tr{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;margin-top:5px;font-size:1.1rem;font-weight:bold}
+.footer{text-align:center;background:#1a1a1a;border:1px solid #c9a84c;border-radius:10px;padding:10px;margin-top:10px}
+.footer h3{color:#c9a84c;font-size:1rem}
+.footer p{color:#888;font-size:0.82rem;margin-top:2px}
+.hint{background:#252525;border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:0.78rem;color:#888}
+.win-card{background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:12px;margin-bottom:10px;position:relative}
+.win-card h4{color:#c9a84c;font-size:0.95rem;font-weight:bold;margin-bottom:10px}
+.del{position:absolute;top:10px;right:10px;background:#5a1a1a;color:#ff6b6b;border:none;border-radius:5px;padding:3px 8px;font-size:0.8rem;cursor:pointer}
+.add-btn{width:100%;background:#1a1a1a;color:#c9a84c;border:1px dashed #c9a84c;padding:11px;border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;margin-bottom:10px}
+.win-res{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:11px;margin-bottom:8px}
+.win-res h4{color:#c9a84c;font-size:0.9rem;font-weight:bold;margin-bottom:7px;border-bottom:1px solid #333;padding-bottom:5px}
+.final-box{background:#c9a84c;color:#0f0f0f;padding:14px;border-radius:10px;text-align:center;margin-top:8px}
+.final-box h2{font-size:1.5rem;font-weight:bold}
+.final-box p{font-size:0.95rem;margin-top:3px;font-weight:bold}
+.reset-btn{width:100%;background:#252525;color:#888;border:1px solid #333;padding:9px;border-radius:8px;font-size:0.95rem;cursor:pointer;margin-top:8px}
+.glass-box{background:#0f1f2f;border:1px solid #4a8ab5;border-radius:8px;padding:10px;margin-top:7px}
+.glass-box h4{color:#7db8ff;font-size:0.85rem;font-weight:bold;margin-bottom:7px}
+</style>
+</head>
+<body>
+
+<div class="shop">
+  <h2>🏪 ADEEL WELDING & ALUMINIUM HOUSE</h2>
+  <p>📞 0321-7378024</p>
+</div>
+
+<div class="tabs">
+  <div class="tab on" id="tab1" onclick="goPage('three')">🪟 THREE TRACK</div>
+  <div class="tab" id="tab2" onclick="goPage('double')">🪟 DOUBLE TRACK</div>
+  <div class="tab" id="tab3" onclick="goPage('customer')">👥 CUSTOMER</div>
+  <div class="tab" id="tab4" onclick="goPage('cutting')">✂️ CUTTING</div>
+</div>
+
+<!-- THREE TRACK -->
+<div class="pg on" id="pg-three">
+  <div class="fbox">
+    <h3>📐 Formula (Saved)</h3>
+    DC26F Bottom W+6" <span class="tag">880</span><br>
+    DC30F Top+2Sides H+6" <span class="tag">754</span><br>
+    M23 2pcs H exact <span class="tag">354</span><br>
+    M28 2pcs H exact <span class="tag">431</span><br>
+    M24 2pcs W exact <span class="tag">420</span><br>
+    D29 2H+1W exact <span class="tag">274</span>
+  </div>
+  <div class="card">
+    <h3>📏 Size Daalen</h3>
+    <div class="row">
+      <div class="grp"><label>Width (inches)</label><input id="t1" type="number" placeholder="48"></div>
+      <div class="grp"><label>Height (inches)</label><input id="t2" type="number" placeholder="48"></div>
+    </div>
+    <div class="row">
+      <div class="grp"><label>Qty</label><input id="t3" type="number" value="1"></div>
+      <div class="grp"><label>Discount %</label><input id="t4" type="number" value="0"></div>
+    </div>
+    <div class="row">
+      <div class="grp"><label>Glass (per sqft)</label><input id="t5" type="number" value="0"></div>
+      <div class="grp"><label>Accessories</label><input id="t6" type="number" value="0"></div>
+    </div>
+    <div class="row">
+      <div class="grp"><label>Labour (per sqft)</label><input id="t7" type="number" value="0"></div>
+    </div>
+    <button class="btn" id="tbtn">CALCULATE ▶</button>
+  </div>
+  <div class="res" id="t-res">
+    <div class="g2">
+      <div class="rc"><div class="rl">Size</div><div class="rv" id="t-sz">—</div></div>
+      <div class="rc hl"><div class="rl">Qty</div><div class="rv" id="t-qt">—</div></div>
+      <div class="rc"><div class="rl">Sqft</div><div class="rv" id="t-sf">—</div></div>
+      <div class="rc"><div class="rl">Pieces</div><div class="rv">13</div></div>
+    </div>
+    <div class="bd">
+      <h4>🔩 Pieces</h4>
+      <div class="br"><span class="bn">DC26F Bottom (W+6")</span><span class="bv" id="t-p1">—</span></div>
+      <div class="br"><span class="bn">DC30F Top (W+6")</span><span class="bv" id="t-p2">—</span></div>
+      <div class="br"><span class="bn">DC30F Left (H+6")</span><span class="bv" id="t-p3">—</span></div>
+      <div class="br"><span class="bn">DC30F Right (H+6")</span><span class="bv" id="t-p4">—</span></div>
+      <div class="br"><span class="bn">M23 x2 H exact</span><span class="bv" id="t-p5">—</span></div>
+      <div class="br"><span class="bn">M28 x2 H exact</span><span class="bv" id="t-p6">—</span></div>
+      <div class="br"><span class="bn">M24 x2 W exact</span><span class="bv" id="t-p7">—</span></div>
+      <div class="br"><span class="bn">D29 x2 H exact</span><span class="bv" id="t-p8">—</span></div>
+      <div class="br"><span class="bn">D29 x1 W exact</span><span class="bv" id="t-p9">—</span></div>
+    </div>
+    <div class="bd">
+      <h4>💰 Rates</h4>
+      <div class="br"><span class="bn">DC26F</span><span class="bv" id="t-r1">—</span></div>
+      <div class="br"><span class="bn">DC30F</span><span class="bv" id="t-r2">—</span></div>
+      <div class="br"><span class="bn">M23</span><span class="bv" id="t-r3">—</span></div>
+      <div class="br"><span class="bn">M28</span><span class="bv" id="t-r4">—</span></div>
+      <div class="br"><span class="bn">M24</span><span class="bv" id="t-r5">—</span></div>
+      <div class="br"><span class="bn">D29</span><span class="bv" id="t-r6">—</span></div>
+    </div>
+    <div class="tr" style="background:#333;color:#ccc"><span>SECTIONS TOTAL</span><span id="t-gross">—</span></div>
+    <div class="tr" style="background:#1e1a0f;color:#c9a84c"><span>DISCOUNT (<span id="t-dp">0</span>%)</span><span id="t-da">—</span></div>
+    <div class="tr" style="background:#2a2a2a;color:#ccc"><span>NET SECTIONS</span><span id="t-net">—</span></div>
+    <div class="tr" style="background:#1a3a1a;color:#7dff7d"><span>+ GLASS</span><span id="t-gl">—</span></div>
+    <div class="tr" style="background:#1a2a3a;color:#7db8ff"><span>+ ACCESSORIES</span><span id="t-ac">—</span></div>
+    <div class="tr" style="background:#2a1a3a;color:#d4a0ff"><span>+ LABOUR</span><span id="t-lb">—</span></div>
+< truncated lines 140-405 >
+  document.getElementById('d-fin').textContent=rs(fin);
+  document.getElementById('d-ps').textContent=sqft>0?rs(fin/sqft)+'/sqft':'—';
+  document.getElementById('d-res').style.display='block';
+  document.getElementById('d-res').scrollIntoView({behavior:'smooth'});
+});
+
+// CUSTOMER
+var cType='three', wNum=0;
+function setCT(t){
+  cType=t;
+  document.getElementById('ct1').className='tab'+(t==='three'?' on':'');
+  document.getElementById('ct2').className='tab'+(t==='double'?' on':'');
+  document.getElementById('c-wins').innerHTML='';
+  document.getElementById('c-res').style.display='none';
+  wNum=0; addWin();
+}
+function addWin(){
+  wNum++;
+  var n=wNum;
+  var d=document.createElement('div');
+  d.className='win-card'; d.id='wc'+n;
+  d.innerHTML='<h4>🪟 WINDOW '+n+'</h4>'+
+    '<button class="del" onclick="document.getElementById(\'wc'+n+'\').remove()">✕</button>'+
+    '<div class="row"><div class="grp"><label>Width</label><input type="number" id="ww'+n+'" placeholder="48"></div>'+
+    '<div class="grp"><label>Height</label><input type="number" id="wh'+n+'" placeholder="48"></div></div>'+
+    '<div class="row"><div class="grp"><label>Qty</label><input type="number" id="wq'+n+'" value="1"></div>'+
+    '<div class="grp"><label>Labour/sqft</label><input type="number" id="wl'+n+'" value="0"></div></div>';
+  document.getElementById('c-wins').appendChild(d);
+}
+document.getElementById('c-addbtn').addEventListener('click', addWin);
+document.getElementById('c-calcbtn').addEventListener('click', function(){
+  var cards=document.querySelectorAll('.win-card');
+  if(!cards.length){alert('Window add karein!');return;}
+  var html='',tot=0,num=0;
+  var disc=(parseFloat(document.getElementById('c-disc').value)||0)/100;
+  var GR=parseFloat(document.getElementById('c-gr').value)||0;
+  var AC=parseFloat(document.getElementById('c-ac').value)||0;
+  cards.forEach(function(c){
+    var id=c.id.replace('wc','');
+    var w=parseFloat(document.getElementById('ww'+id).value)||0;
+    var h=parseFloat(document.getElementById('wh'+id).value)||0;
+    var qty=parseInt(document.getElementById('wq'+id).value)||1;
+    var lr=parseFloat(document.getElementById('wl'+id).value)||0;
+    if(!w||!h)return;
+    num++;
+    var gross;
+    if(cType==='three'){
+      gross=(w+6)*qty/12*880+((w+6)+(h+6)+(h+6))*qty/12*754+h*2*qty/12*354+h*2*qty/12*431+w*2*qty/12*420+((h*2)+w)*qty/12*274;
+    } else {
+      gross=(w+6)*qty/12*680+((w+6)+(h+6)+(h+6))*qty/12*612+h*2*qty/12*354+h*2*qty/12*431+w*2*qty/12*420;
+    }
+    var net=gross-(gross*disc);
+    var cg=((w-5)/12)*((h-5)/12)*qty*GR;
+    var ca=AC*qty;
+    var sqft=((w+3)/12)*((h+3)/12)*qty;
+    var cl=sqft*lr;
+    var fin=net+cg+ca+cl;
+    tot+=fin;
+    html+='<div class="win-res"><h4>🪟 W'+num+' — '+w+'" x '+h+'" (x'+qty+')</h4>'+
+      '<div class="br"><span class="bn">Sections (after disc)</span><span class="bv">'+rs(net)+'</span></div>'+
+      '<div class="br"><span class="bn">Glass</span><span class="bv">'+rs(cg)+'</span></div>'+
+      '<div class="br"><span class="bn">Accessories</span><span class="bv">'+rs(ca)+'</span></div>'+
+      '<div class="br"><span class="bn">Labour</span><span class="bv">'+rs(cl)+'</span></div>'+
+      '<div class="br"><span class="bn" style="color:#c9a84c">Window Total</span><span class="bv" style="color:#7dff7d">'+rs(fin)+'</span></div></div>';
+  });
+  document.getElementById('c-results').innerHTML=html;
+  document.getElementById('c-final').textContent=rs(tot);
+  document.getElementById('c-res').style.display='block';
+  document.getElementById('c-res').scrollIntoView({behavior:'smooth'});
+});
+document.getElementById('c-resetbtn').addEventListener('click', function(){
+  document.getElementById('c-wins').innerHTML='';
+  document.getElementById('c-results').innerHTML='';
+  document.getElementById('c-res').style.display='none';
+  wNum=0; addWin();
+});
+
+// CUTTING
+document.getElementById('cu-btn').addEventListener('click', function(){
+  var wi=parseFloat(document.getElementById('cu1').value)||0;
+  var ws=parseFloat(document.getElementById('cu2').value)||0;
+  var hi=parseFloat(document.getElementById('cu3').value)||0;
+  var hs=parseFloat(document.getElementById('cu4').value)||0;
+  if(!wi||!hi){alert('Width aur Height daalen!');return;}
+  var w=wi+(ws/8), h=hi+(hs/8);
+  var m23=h-1.75, m24=(w-6)/2;
+  document.getElementById('cu-m23').textContent=disp(m23);
+  document.getElementById('cu-m24').textContent=disp(m24);
+  document.getElementById('cu-d1').textContent=disp(m23);
+  document.getElementById('cu-d2').textContent=disp(m24+2);
+  document.getElementById('cu-gh').textContent=disp(m23-4.125);
+  document.getElementById('cu-gw').textContent=disp(m24+0.5);
+  document.getElementById('cu-res').style.display='block';
+  document.getElementById('cu-res').scrollIntoView({behavior:'smooth'});
+});
+
+// PROTECTION
+var PWD='Hassanm8480317';
+function chk(){
+  try{
+    if(localStorage.getItem('au')==='1')return true;
+    var o=parseInt(localStorage.getItem('ao')||'0')+1;
+    localStorage.setItem('ao',o);
+    if(o<=2)return true;
+    return false;
+  }catch(e){return true;}
+}
+function lock(){
+  var ov=document.createElement('div');
+  ov.id='ls';
+  ov.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(0,0,0,0.97);display:flex;align-items:center;justify-content:center;';
+  ov.innerHTML='<div style="background:#1a1a1a;border:2px solid #c9a84c;border-radius:12px;padding:24px;text-align:center;width:280px;">'+
+    '<p style="color:#c9a84c;font-size:1.1rem;font-weight:bold;margin-bottom:8px">🔒 PROTECTED</p>'+
+    '<p style="color:#888;font-size:0.82rem;margin-bottom:12px">Adeel Welding ke liye hai</p>'+
+    '<input id="pi" type="password" placeholder="Password daalen..." style="width:100%;padding:10px;border-radius:6px;border:1px solid #555;background:#252525;color:#fff;font-size:1rem;margin-bottom:10px;outline:none;"><br>'+
+    '<button id="pb" style="width:100%;background:#c9a84c;border:none;padding:11px;border-radius:6px;font-size:1rem;cursor:pointer;font-weight:bold">🔑 OPEN KAREIN</button>'+
+    '<p id="pe" style="color:#ff6b6b;font-size:0.8rem;margin-top:8px;display:none">Galat password!</p>'+
+    '</div>';
+  document.body.appendChild(ov);
+  document.getElementById('pb').addEventListener('click', function(){
+    if(document.getElementById('pi').value===PWD){
+      try{localStorage.setItem('au','1');}catch(e){}
+      document.getElementById('ls').remove();
+    } else {
+      document.getElementById('pe').style.display='block';
+      document.getElementById('pi').value='';
+    }
+  });
+  document.getElementById('pi').addEventListener('keypress',function(e){
+    if(e.key==='Enter')document.getElementById('pb').click();
+  });
+}
+window.addEventListener('load',function(){if(!chk())lock();});
+
+// INIT
+addWin();
+</script>
+</body>
+</html>
