@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three Track Window</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Rajdhani:wght@400;500;600&display=swap');
+  :root { --gold: #c9a84c; --gold-light: #e8c96a; --dark: #0f0f0f; --dark2: #1a1a1a; --dark3: #252525; --border: #333; --text: #e0e0e0; --muted: #888; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; min-height: 100vh; padding: 16px; }
+  .header { text-align: center; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 2px solid var(--gold); }
+  .header h1 { font-family: 'Teko', sans-serif; font-size: 2rem; color: var(--gold); letter-spacing: 3px; }
+  .header p { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+  .formula-box { background: var(--dark2); border: 1px solid var(--gold); border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.9; }
+  .formula-box h3 { font-family: 'Teko', sans-serif; color: var(--gold); font-size: 1.1rem; margin-bottom: 6px; }
+  .tag { background: var(--dark3); border: 1px solid var(--border); padding: 1px 7px; border-radius: 4px; font-size: 0.8rem; color: var(--gold-light); margin-left: 4px; }
+  .card { background: var(--dark2); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+  .card h2 { font-family: 'Teko', sans-serif; color: var(--gold); font-size: 1.3rem; letter-spacing: 2px; margin-bottom: 14px; }
+  .row { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .grp { flex: 1; min-width: 120px; }
+  label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+  input[type=number] { width: 100%; background: var(--dark3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; color: var(--text); font-size: 1rem; font-family: 'Rajdhani', sans-serif; outline: none; }
+  input[type=number]:focus { border-color: var(--gold); }
+  .btn { width: 100%; background: var(--gold); color: var(--dark); border: none; padding: 13px; border-radius: 8px; font-family: 'Teko', sans-serif; font-size: 1.3rem; letter-spacing: 3px; cursor: pointer; margin-top: 4px; }
+  .btn:active { opacity: 0.85; }
+  .result { display: none; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .rcard { background: var(--dark3); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+  .rcard.hl { border-color: var(--gold); background: #1e1a0f; }
+  .rcard .rl { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+  .rcard .rv { font-family: 'Teko', sans-serif; font-size: 1.5rem; color: var(--text); }
+  .rcard.hl .rv { color: var(--gold); }
+  .bdown { background: var(--dark3); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+  .bdown h4 { font-family: 'Teko', sans-serif; color: var(--gold-light); font-size: 0.95rem; letter-spacing: 1px; margin-bottom: 8px; }
+  .brow { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .brow:last-child { border: none; }
+  .brow .bn { color: var(--muted); }
+  .brow .bv { color: var(--text); font-weight: 600; }
+  .trow { display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; border-radius: 8px; margin-top: 6px; font-family: 'Teko', sans-serif; font-size: 1.3rem; letter-spacing: 1px; }
+  .note { text-align: center; font-size: 0.78rem; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+  .shop { text-align: center; background: var(--dark2); border: 1px solid var(--gold); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
+  .shop h2 { font-family: 'Teko', sans-serif; color: var(--gold); font-size: 1.5rem; letter-spacing: 2px; }
+  .shop p { color: var(--muted); font-size: 0.9rem; margin-top: 3px; }
+  .shop-footer { text-align: center; background: var(--dark2); border: 1px solid var(--gold); border-radius: 10px; padding: 12px 16px; margin-top: 16px; }
+  .shop-footer h3 { font-family: 'Teko', sans-serif; color: var(--gold); font-size: 1.3rem; letter-spacing: 2px; }
+  .shop-footer p { color: var(--muted); font-size: 0.9rem; margin-top: 3px; }
+  .print-btn { width: 100%; background: #2a6a2a; color: #fff; border: none; padding: 13px; border-radius: 8px; font-family: 'Teko', sans-serif; font-size: 1.3rem; letter-spacing: 3px; cursor: pointer; margin-top: 12px; }
+  .print-btn:active { opacity: 0.85; }
+  @media print { .card { display: none !important; } .formula-box { display: none !important; } .print-btn { display: none !important; } .btn { display: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="shop">
+  <h2>🏪 ADEEL WELDING & ALUMINIUM HOUSE</h2>
+  <p>📞 0321-7378024</p>
+</div>
+
+<div class="header">
+  <h1>⬛ THREE TRACK WINDOW</h1>
+  <p>DC26F + DC30F + M23 + M28 + M24 + D29 — Champion 1.2mm</p>
+</div>
+
+<div class="formula-box">
+  <h3>📐 FORMULA (Saved)</h3>
+  <div>• <b>DC26F</b> — Bottom: W + 6" <span class="tag">880</span></div>
+  <div>• <b>DC30F</b> — Top + 2 Sides: H + 6" each <span class="tag">754</span></div>
+  <div>• <b>M23</b> — 2 pcs: H exact <span class="tag">354</span></div>
+  <div>• <b>M28</b> — 2 pcs: H exact <span class="tag">431</span></div>
+  <div>• <b>M24</b> — 2 pcs: W exact <span class="tag">420</span></div>
+  <div>• <b>D29</b> — 2 pcs H exact + 1 pc W exact <span class="tag">274</span></div>
+</div>
+
+<div class="card">
+  <h2>📏 SIZE DAALEN</h2>
+  <div class="row">
+    <div class="grp"><label>Width (inches)</label><input type="number" id="iW" placeholder="48" min="1"></div>
+    <div class="grp"><label>Height (inches)</label><input type="number" id="iH" placeholder="48" min="1"></div>
+  </div>
+  <div class="row">
+    <div class="grp"><label>Frames (Qty)</label><input type="number" id="iQ" placeholder="1" min="1" value="1"></div>
+    <div class="grp"><label>Discount (%)</label><input type="number" id="iD" placeholder="0" min="0" max="100" value="0"></div>
+  </div>
+  <div class="row">
+    <div class="grp"><label>🪟 Glass Rate (per sqft)</label><input type="number" id="iGR" placeholder="0" min="0" value="0"></div>
+    <div class="grp"><label>🔧 Accessories (Rs.)</label><input type="number" id="iAC" placeholder="0" min="0" value="0"></div>
+  </div>
+  <div class="row">
+    <div class="grp"><label>👷 Labour Rate (per sqft)</label><input type="number" id="iLR" placeholder="0" min="0" value="0"></div>
+  </div>
+  <button class="btn" onclick="calc()">CALCULATE KAREIN ▶</button>
+</div>
+
+<div class="result" id="res">
+
+  <div class="grid2">
+    <div class="rcard"><div class="rl">Frame Size</div><div class="rv" id="oSize">—</div></div>
+    <div class="rcard hl"><div class="rl">Quantity</div><div class="rv" id="oQty">—</div></div>
+    <div class="rcard"><div class="rl">Total Sqft</div><div class="rv" id="oSqft">—</div></div>
+    <div class="rcard"><div class="rl">Total Pieces</div><div class="rv">13 pcs</div></div>
+  </div>
+
+  <div class="bdown">
+    <h4>🔩 PIECE BREAKDOWN</h4>
+    <div class="brow"><span class="bn">DC26F — Bottom (W+6")</span><span class="bv" id="pB">—</span></div>
+    <div class="brow"><span class="bn">DC30F — Top (W+6")</span><span class="bv" id="pT">—</span></div>
+    <div class="brow"><span class="bn">DC30F — Left (H+6")</span><span class="bv" id="pL">—</span></div>
+    <div class="brow"><span class="bn">DC30F — Right (H+6")</span><span class="bv" id="pR">—</span></div>
+    <div class="brow"><span class="bn">M23 × 2 pcs (H exact)</span><span class="bv" id="pM23">—</span></div>
+    <div class="brow"><span class="bn">M28 × 2 pcs (H exact)</span><span class="bv" id="pM28">—</span></div>
+    <div class="brow"><span class="bn">M24 × 2 pcs (W exact)</span><span class="bv" id="pM24">—</span></div>
+    <div class="brow"><span class="bn">D29 × 2 pcs (H exact)</span><span class="bv" id="pD29H">—</span></div>
+    <div class="brow"><span class="bn">D29 × 1 pc (W exact)</span><span class="bv" id="pD29W">—</span></div>
+  </div>
+
+  <div class="bdown">
+    <h4>💰 RATE BREAKDOWN</h4>
+    <div class="brow"><span class="bn">DC26F</span><span class="bv" id="rDC26">—</span></div>
+    <div class="brow"><span class="bn">DC30F (3 sides)</span><span class="bv" id="rDC30">—</span></div>
+    <div class="brow"><span class="bn">M23</span><span class="bv" id="rM23">—</span></div>
+    <div class="brow"><span class="bn">M28</span><span class="bv" id="rM28">—</span></div>
+    <div class="brow"><span class="bn">M24</span><span class="bv" id="rM24">—</span></div>
+    <div class="brow"><span class="bn">D29</span><span class="bv" id="rD29">—</span></div>
+  </div>
+
+  <div class="trow" style="background:#333; color:#ccc;">
+    <span>SECTIONS TOTAL</span><span id="oGross">Rs. —</span>
+  </div>
+  <div class="trow" style="background:#1e1a0f; color:var(--gold);">
+    <span>DISCOUNT (<span id="oDiscPct">0</span>%)</span><span id="oDiscAmt">- Rs. —</span>
+  </div>
+  <div class="trow" style="background:#2a2a2a; color:#ccc;">
+    <span>NET SECTIONS</span><span id="oNet">Rs. —</span>
+  </div>
+  <div class="trow" style="background:#1a3a1a; color:#7dff7d;">
+    <span>+ GLASS</span><span id="oGlass">—</span>
+  </div>
+  <div class="trow" style="background:#1a2a3a; color:#7db8ff;">
+    <span>+ ACCESSORIES</span><span id="oAcc">—</span>
+  </div>
+  <div class="trow" style="background:#2a1a3a; color:#d4a0ff;">
+    <span>+ LABOUR</span><span id="oLabour">—</span>
+  </div>
+  <div class="trow" style="background:var(--gold); color:#000; font-size:1.5rem;">
+    <span>GRAND TOTAL</span><span id="oFinal">Rs. —</span>
+  </div>
+< truncated lines 148-153 >
+  <div class="shop-footer">
+    <h3>🏪 ADEEL WELDING & ALUMINIUM HOUSE</h3>
+    <p>📞 0321-7378024</p>
+  </div>
+  <button class="print-btn" onclick="window.print()">🖨️ PDF / PRINT KAREIN</button>
+</div>
+
+<script>
+function calc() {
+  var w = parseFloat(document.getElementById('iW').value);
+  var h = parseFloat(document.getElementById('iH').value);
+  var qty = parseInt(document.getElementById('iQ').value) || 1;
+  var disc = parseFloat(document.getElementById('iD').value) || 0;
+  var glassRate = parseFloat(document.getElementById('iGR').value) || 0;
+  var accAmt = parseFloat(document.getElementById('iAC').value) || 0;
+  var labourRate = parseFloat(document.getElementById('iLR').value) || 0;
+
+  if (!w || !h || w <= 0 || h <= 0) { alert('Width aur Height daalen!'); return; }
+
+  // Rates
+  var rDC26F = 880, rDC30F = 754, rM23 = 354, rM28 = 431, rM24 = 420, rD29 = 274;
+
+  // Piece sizes (inches)
+  var bottom = w + 6;
+  var top = w + 6;
+  var left = h + 6;
+  var right = h + 6;
+  var m23 = h, m28 = h, m24 = w;
+  var d29h = h, d29w = w;
+
+  // Total lengths per frame (inches)
+  var tDC26F = bottom;
+  var tDC30F = top + left + right;
+  var tM23 = m23 * 2;
+  var tM28 = m28 * 2;
+  var tM24 = m24 * 2;
+  var tD29 = (d29h * 2) + d29w;
+
+  // Cost (convert inches to feet, multiply by qty)
+  var cDC26F = (tDC26F * qty / 12) * rDC26F;
+  var cDC30F = (tDC30F * qty / 12) * rDC30F;
+  var cM23   = (tM23   * qty / 12) * rM23;
+  var cM28   = (tM28   * qty / 12) * rM28;
+  var cM24   = (tM24   * qty / 12) * rM24;
+  var cD29   = (tD29   * qty / 12) * rD29;
+
+  var gross = cDC26F + cDC30F + cM23 + cM28 + cM24 + cD29;
+  var discAmt = gross * disc / 100;
+  var net = gross - discAmt;
+
+  // Glass: (W-5) x (H-5) sqft
+  var glassW = (w - 5) / 12;
+  var glassH = (h - 5) / 12;
+  var glassSqft = glassW * glassH * qty;
+  var cGlass = glassSqft * glassRate;
+
+  // Accessories total
+  var cAcc = accAmt * qty;
+
+  // Labour: frame sqft x rate
+  var frameSqft = ((w + 3) / 12) * ((h + 3) / 12);
+  var totalSqft = frameSqft * qty;
+  var cLabour = totalSqft * labourRate;
+
+  var final = net + cGlass + cAcc + cLabour;
+  var perSqft = totalSqft > 0 ? final / totalSqft : 0;
+
+  // Display
+  document.getElementById('oSize').textContent = w + '" x ' + h + '"';
+  document.getElementById('oQty').textContent = qty + ' frames';
+  document.getElementById('oSqft').textContent = totalSqft.toFixed(2) + ' sqft';
+
+  document.getElementById('pB').textContent = bottom + '"';
+  document.getElementById('pT').textContent = top + '"';
+  document.getElementById('pL').textContent = left + '"';
+  document.getElementById('pR').textContent = right + '"';
+  document.getElementById('pM23').textContent = m23 + '" x 2';
+  document.getElementById('pM28').textContent = m28 + '" x 2';
+  document.getElementById('pM24').textContent = m24 + '" x 2';
+  document.getElementById('pD29H').textContent = d29h + '" x 2';
+  document.getElementById('pD29W').textContent = d29w + '" x 1';
+
+  document.getElementById('rDC26').textContent = 'Rs. ' + Math.round(cDC26F);
+  document.getElementById('rDC30').textContent = 'Rs. ' + Math.round(cDC30F);
+  document.getElementById('rM23').textContent  = 'Rs. ' + Math.round(cM23);
+  document.getElementById('rM28').textContent  = 'Rs. ' + Math.round(cM28);
+  document.getElementById('rM24').textContent  = 'Rs. ' + Math.round(cM24);
+  document.getElementById('rD29').textContent  = 'Rs. ' + Math.round(cD29);
+
+  document.getElementById('oGross').textContent   = 'Rs. ' + Math.round(gross);
+  document.getElementById('oDiscPct').textContent = disc;
+  document.getElementById('oDiscAmt').textContent = '- Rs. ' + Math.round(discAmt);
+  document.getElementById('oNet').textContent     = 'Rs. ' + Math.round(net);
+  document.getElementById('oGlass').textContent   = glassRate > 0 ? 'Rs. ' + Math.round(cGlass) : '—';
+  document.getElementById('oAcc').textContent     = accAmt > 0 ? 'Rs. ' + Math.round(cAcc) : '—';
+  document.getElementById('oLabour').textContent  = labourRate > 0 ? 'Rs. ' + Math.round(cLabour) : '—';
+  document.getElementById('oFinal').textContent   = 'Rs. ' + Math.round(final);
+  document.getElementById('oPerSqft').textContent = 'Rs. ' + Math.round(perSqft) + '/sqft';
+
+  document.getElementById('res').style.display = 'block';
+  document.getElementById('res').scrollIntoView({ behavior: 'smooth' });
+}
+document.addEventListener('keypress', function(e) { if (e.key === 'Enter') calc(); });
+</script>
+
+<script>
+// Protection
+var PASSWORD = 'Hassanm8480317';
+var MAX_FREE = 2;
+
+function checkAccess() {
+  try {
+    var unlocked = localStorage.getItem('calc_unlocked');
+    if (unlocked === 'yes') return true;
+    var opens = parseInt(localStorage.getItem('calc_opens') || '0');
+    opens++;
+    localStorage.setItem('calc_opens', opens);
+    if (opens <= MAX_FREE) return true;
+    var pwd = prompt('🔒 Ye calculator protected hai. Password daalen:');
+    if (pwd === PASSWORD) {
+      localStorage.setItem('calc_unlocked', 'yes');
+      return true;
+    }
+    return false;
+  } catch(e) { return true; }
+}
+
+function applyProtection() {
+  if (!checkAccess()) {
+    document.body.style.filter = 'blur(12px)';
+    document.body.style.pointerEvents = 'none';
+    document.body.style.userSelect = 'none';
+    var ov = document.createElement('div');
+    ov.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;display:flex;align-items:center;justify-content:center;';
+    ov.innerHTML = '<div style="background:#1a1a1a;border:2px solid #c9a84c;border-radius:12px;padding:24px;text-align:center;max-width:300px;">' +
+      '<p style="color:#c9a84c;font-size:1.1rem;font-family:sans-serif;margin-bottom:12px;">🔒 Authorized Users Only!</p>' +
+      '<p style="color:#888;font-size:0.85rem;font-family:sans-serif;margin-bottom:16px;">Ye calculator sirf Adeel Welding ke liye hai</p>' +
+      '<button onclick="location.reload()" style="background:#c9a84c;border:none;padding:10px 24px;border-radius:6px;font-size:1rem;cursor:pointer;font-weight:bold;">🔑 Password Daalen</button>' +
+      '</div>';
+    document.body.appendChild(ov);
+  }
+}
+window.addEventListener('load', applyProtection);
+</script>
+
+</body>
+</html>
